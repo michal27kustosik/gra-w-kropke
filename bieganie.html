@@ -1,0 +1,131 @@
+<!DOCTYPE html>   
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cwiczenia celności dla początkujących w cs2</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: red;
+        }
+        .dot {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background-color: blue;
+            border-radius: 50%;
+        }
+        .message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 144px;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            color: white;
+            text-shadow: 2px 2px 8px black;
+            display: none;
+        }
+        .crown {
+            position: fixed;
+            top: 10%; /* Korona jeszcze wyżej */
+            left: calc(50% + 250px);
+            transform: translate(-50%, -50%);
+            font-size: 192px;
+            font-family: Arial, sans-serif;
+            color: gold;
+            display: none;
+        }
+        /* Timer styling */
+        .timer {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            font-family: Arial, sans-serif;
+            color: white;
+            z-index: 1000; /* Ensure it stays on top */
+        }
+    </style>
+</head>
+<body>
+    <div class="timer" id="timer">00:00.000</div>
+    <div class="dot" id="dot"></div>
+    <div class="message" id="message">Brawo! Wygrałeś z kropką!</div>
+    <div class="crown" id="crown">👑</div>
+
+    <script>
+        const dot = document.getElementById('dot');
+        const message = document.getElementById('message');
+        const crown = document.getElementById('crown');
+        const dotSize = 65;
+        const timerElement = document.getElementById('timer');
+        let startTime = Date.now(); // Record the start time in milliseconds
+        let timerInterval; // To store the timer interval ID
+
+        // Function to get random position within the window bounds
+        function randomPosition() {
+            const x = Math.random() * (window.innerWidth - dotSize);
+            const y = Math.random() * (window.innerHeight - dotSize);
+            return { x, y };
+        }
+
+        // Function to move the dot to a new random position
+        function moveDot() {
+            const { x, y } = randomPosition();
+            dot.style.left = `${x}px`;
+            dot.style.top = `${y}px`;
+        }
+
+        // Function to check if the click is on the dot
+        function checkClick(event) {
+            const dotRect = dot.getBoundingClientRect();
+            if (
+                event.clientX >= dotRect.left &&
+                event.clientX <= dotRect.right &&
+                event.clientY >= dotRect.top &&
+                event.clientY <= dotRect.bottom
+            ) {
+                message.style.display = 'block';
+                crown.style.display = 'block';
+                clearInterval(dotMovement);
+                clearInterval(timerInterval); // Stop the timer
+                dot.remove();
+
+                // Refresh the page after 5 seconds
+                setTimeout(function() {
+                    location.reload(); // Refresh the page
+                }, 5000);
+            }
+        }
+
+        // Set interval to move the dot every 650 milliseconds
+        let dotMovement = setInterval(moveDot, 650);
+
+        // Add a click event listener to the dot
+        dot.addEventListener('click', checkClick);
+
+        // Initial random position
+        moveDot();
+
+        // Timer function that updates every 1 millisecond (to show accurate milliseconds)
+        timerInterval = setInterval(function() {
+            const elapsedTime = Date.now() - startTime; // Time passed in milliseconds
+
+            // Calculate minutes, seconds, and milliseconds
+            const minutes = Math.floor(elapsedTime / 60000); // Minutes
+            const seconds = Math.floor((elapsedTime % 60000) / 1000); // Seconds
+            const milliseconds = elapsedTime % 1000; // Milliseconds
+
+            // Format time in MM:SS.MS
+            const formattedTime = 
+                `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${String(milliseconds).padStart(3, '0')}`;
+
+            timerElement.textContent = formattedTime; // Update the timer display
+        }, 1); // Update every millisecond to show milliseconds accurately
+    </script>
+</body>
+</html>
