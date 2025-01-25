@@ -1,4 +1,4 @@
-<!DOCTYPE html>   
+<!DOCTYPE html>    
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -9,6 +9,29 @@
             margin: 0;
             overflow: hidden;
             background-color: red;
+        }
+        .menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: black;
+            color: white;
+            display: flex;
+            justify-content: center;
+            padding: 10px 0;
+            z-index: 1000;
+        }
+        .menu a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-family: Arial, sans-serif;
+            font-size: 18px;
+            transition: color 0.3s;
+        }
+        .menu a:hover {
+            color: gold;
         }
         .dot {
             position: absolute;
@@ -30,7 +53,7 @@
         }
         .crown {
             position: fixed;
-            top: 10%; /* Korona jeszcze wyżej */
+            top: 5%; /* Korona jeszcze wyżej */
             left: calc(50% + 250px);
             transform: translate(-50%, -50%);
             font-size: 192px;
@@ -41,7 +64,7 @@
         /* Timer styling */
         .timer {
             position: fixed;
-            top: 10px;
+            top: 50px;
             left: 50%;
             transform: translateX(-50%);
             font-size: 24px;
@@ -52,6 +75,12 @@
     </style>
 </head>
 <body>
+    <div class="menu">
+        <a href="#">Start</a>
+        <a href="#">O grze</a>
+        <a href="#">Instrukcja</a>
+        <a href="#">Kontakt</a>
+    </div>
     <div class="timer" id="timer">00:00.000</div>
     <div class="dot" id="dot"></div>
     <div class="message" id="message">Brawo! Wygrałeś z kropką!</div>
