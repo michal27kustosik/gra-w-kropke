@@ -15,23 +15,20 @@
             top: 0;
             left: 0;
             width: 100%;
-            background-color: black;
-            color: white;
+            height: 100%;
+            background-color: green;
             display: flex;
             justify-content: center;
-            padding: 10px 0;
-            z-index: 1000;
+            align-items: center;
         }
-        .menu a {
-            color: white;
-            text-decoration: none;
-            margin: 0 15px;
+        .start-button {
+            font-size: 48px;
+            padding: 20px 180px; /* Adjusted padding for increased size */
+            background-color: yellow;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
             font-family: Arial, sans-serif;
-            font-size: 18px;
-            transition: color 0.3s;
-        }
-        .menu a:hover {
-            color: gold;
         }
         .dot {
             position: absolute;
@@ -39,6 +36,7 @@
             height: 60px;
             background-color: blue;
             border-radius: 50%;
+            display: none;
         }
         .message {
             position: fixed;
@@ -53,7 +51,7 @@
         }
         .crown {
             position: fixed;
-            top: 5%; /* Korona jeszcze wyżej */
+            top: 10%; /* Korona jeszcze wyżej */
             left: calc(50% + 250px);
             transform: translate(-50%, -50%);
             font-size: 192px;
@@ -64,22 +62,20 @@
         /* Timer styling */
         .timer {
             position: fixed;
-            top: 50px;
+            top: 10px;
             left: 50%;
             transform: translateX(-50%);
             font-size: 24px;
             font-family: Arial, sans-serif;
             color: white;
             z-index: 1000; /* Ensure it stays on top */
+            display: none;
         }
     </style>
 </head>
 <body>
-    <div class="menu">
-        <a href="#">Start</a>
-        <a href="#">O grze</a>
-        <a href="#">Instrukcja</a>
-        <a href="#">Kontakt</a>
+    <div class="menu" id="menu">
+        <button class="start-button" id="startButton">Start</button>
     </div>
     <div class="timer" id="timer">00:00.000</div>
     <div class="dot" id="dot"></div>
@@ -87,13 +83,16 @@
     <div class="crown" id="crown">👑</div>
 
     <script>
+        const menu = document.getElementById('menu');
+        const startButton = document.getElementById('startButton');
         const dot = document.getElementById('dot');
         const message = document.getElementById('message');
         const crown = document.getElementById('crown');
-        const dotSize = 65;
         const timerElement = document.getElementById('timer');
-        let startTime = Date.now(); // Record the start time in milliseconds
-        let timerInterval; // To store the timer interval ID
+        const dotSize = 65;
+        let startTime;
+        let timerInterval;
+        let dotMovement;
 
         // Function to get random position within the window bounds
         function randomPosition() {
@@ -131,30 +130,41 @@
             }
         }
 
-        // Set interval to move the dot every 650 milliseconds
-        let dotMovement = setInterval(moveDot, 650);
+        // Function to start the game
+        function startGame() {
+            menu.style.display = 'none';
+            dot.style.display = 'block';
+            timerElement.style.display = 'block';
 
-        // Add a click event listener to the dot
-        dot.addEventListener('click', checkClick);
+            startTime = Date.now();
 
-        // Initial random position
-        moveDot();
+            // Move the dot every 650 milliseconds
+            dotMovement = setInterval(moveDot, 650);
 
-        // Timer function that updates every 1 millisecond (to show accurate milliseconds)
-        timerInterval = setInterval(function() {
-            const elapsedTime = Date.now() - startTime; // Time passed in milliseconds
+            // Add a click event listener to the dot
+            dot.addEventListener('click', checkClick);
 
-            // Calculate minutes, seconds, and milliseconds
-            const minutes = Math.floor(elapsedTime / 60000); // Minutes
-            const seconds = Math.floor((elapsedTime % 60000) / 1000); // Seconds
-            const milliseconds = elapsedTime % 1000; // Milliseconds
+            // Start the timer
+            timerInterval = setInterval(function() {
+                const elapsedTime = Date.now() - startTime;
 
-            // Format time in MM:SS.MS
-            const formattedTime = 
-                `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${String(milliseconds).padStart(3, '0')}`;
+                const minutes = Math.floor(elapsedTime / 60000);
+                const seconds = Math.floor((elapsedTime % 60000) / 1000);
+                const milliseconds = elapsedTime % 1000;
 
-            timerElement.textContent = formattedTime; // Update the timer display
-        }, 1); // Update every millisecond to show milliseconds accurately
+                const formattedTime = 
+                    `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${String(milliseconds).padStart(3, '0')}`;
+
+                timerElement.textContent = formattedTime;
+            }, 1);
+
+            // Initial dot position
+            moveDot();
+        }
+
+        // Add event listener to start button
+        startButton.addEventListener('click', startGame);
     </script>
 </body>
 </html>
+
